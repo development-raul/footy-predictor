@@ -1,11 +1,59 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "Endpoints details for Footy Predictor API.",
+        "title": "Footy Predictor API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Raul Brindus",
+            "url": "http://www.swagger.io/support",
+            "email": "raul.brindus@gmail.com"
+        },
+        "license": {
+            "name": "Proprietary",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
     },
-    "paths": {},
+    "host": "localhost:5000",
+    "basePath": "/v1",
+    "paths": {
+        "/": {
+            "get": {
+                "description": "Will return a 200 status code if the application is up and running",
+                "tags": [
+                    "Health Check"
+                ],
+                "summary": "Health check endpoint.",
+                "operationId": "health-check",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
     "securityDefinitions": {
-        "bearerAuth": {
+        "ApiKeyAuth": {
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"

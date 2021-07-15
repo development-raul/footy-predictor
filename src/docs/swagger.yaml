@@ -1,8 +1,42 @@
+basePath: /v1
+host: localhost:5000
 info:
-  contact: {}
-paths: {}
+  contact:
+    email: raul.brindus@gmail.com
+    name: Raul Brindus
+    url: http://www.swagger.io/support
+  description: Endpoints details for Footy Predictor API.
+  license:
+    name: Proprietary
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Footy Predictor API
+  version: "1.0"
+paths:
+  /:
+    get:
+      description: Will return a 200 status code if the application is up and running
+      operationId: health-check
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Health check endpoint.
+      tags:
+      - Health Check
 securityDefinitions:
-  bearerAuth:
+  ApiKeyAuth:
     in: header
     name: Authorization
     type: apiKey

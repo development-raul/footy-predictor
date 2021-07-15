@@ -17,14 +17,57 @@ var doc = `{
     "info": {
         "description": "{{.Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Raul Brindus",
+            "url": "http://www.swagger.io/support",
+            "email": "raul.brindus@gmail.com"
+        },
+        "license": {
+            "name": "Proprietary",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {},
+    "paths": {
+        "/": {
+            "get": {
+                "description": "Will return a 200 status code if the application is up and running",
+                "tags": [
+                    "Health Check"
+                ],
+                "summary": "Health check endpoint.",
+                "operationId": "health-check",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
     "securityDefinitions": {
-        "bearerAuth": {
+        "ApiKeyAuth": {
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"
@@ -43,12 +86,12 @@ type swaggerInfo struct {
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
-	Version:     "",
-	Host:        "",
-	BasePath:    "",
+	Version:     "1.0",
+	Host:        "localhost:5000",
+	BasePath:    "/v1",
 	Schemes:     []string{},
-	Title:       "",
-	Description: "",
+	Title:       "Footy Predictor API",
+	Description: "Endpoints details for Footy Predictor API.",
 }
 
 type s struct{}
