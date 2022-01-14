@@ -20,6 +20,9 @@ func init() {
 	if appEnv == "prod" || appEnv == "production" {
 		config = zap.NewProductionConfig()
 		config.OutputPaths = []string{"stderr", logPath}
+	} else if appEnv == "test" {
+		config = zap.NewDevelopmentConfig()
+		config.OutputPaths = []string{"stderr"}
 	} else {
 		config = zap.NewDevelopmentConfig()
 		config.OutputPaths = []string{"stderr", logPath}

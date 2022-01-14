@@ -36,4 +36,5 @@ func StartApplication(c *Credentials) {
 	if err := application.Router.Run(fmt.Sprintf(":%s", c.AppPort)); err != nil {
 		zlog.Logger.Panicw("failed to start application", "error", err)
 	}
+	zlog.Logger.Infow("application started")
 }

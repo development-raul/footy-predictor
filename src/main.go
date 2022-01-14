@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/development-raul/footy-predictor/src/app"
 	"github.com/development-raul/footy-predictor/src/docs"
-	"github.com/development-raul/footy-predictor/src/zlog"
 	"os"
 )
 
@@ -46,5 +45,4 @@ func main() {
 
 	app.StartApplication(&appCred)
 	// Start application will panic so if we got here all is good :)
-	zlog.Logger.Infow("application started")
 }
