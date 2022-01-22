@@ -114,7 +114,10 @@ var doc = `{
                     },
                     {
                         "enum": [
-                            "id code name active"
+                            "id",
+                            "code",
+                            "name",
+                            "active"
                         ],
                         "type": "string",
                         "description": "order field",
@@ -314,6 +317,13 @@ var doc = `{
                 "operationId": "v1-countries-update",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "Country ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Request Sample",
                         "name": "request",
                         "in": "body",
@@ -321,6 +331,55 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/countries.UpdateCountryInput"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/swaggertypes.NoErrorString"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/swaggertypes.StandardBadRequestError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/swaggertypes.StandardUnauthorisedError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/swaggertypes.StandardInternalServerError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Endpoint used to delete an existing country record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Countries"
+                ],
+                "summary": "Delete country",
+                "operationId": "v1-countries-delete",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Country ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -437,8 +496,7 @@ var doc = `{
                     "type": "integer"
                 },
                 "per_page": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "to": {
                     "type": "integer"

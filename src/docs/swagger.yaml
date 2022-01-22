@@ -56,8 +56,7 @@ definitions:
       last_page:
         type: integer
       per_page:
-        example: "0"
-        type: string
+        type: integer
       to:
         type: integer
       total:
@@ -193,7 +192,10 @@ paths:
         type: string
       - description: order field
         enum:
-        - id code name active
+        - id
+        - code
+        - name
+        - active
         in: query
         name: order_by
         type: string
@@ -274,6 +276,39 @@ paths:
       tags:
       - Countries
   /countries/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Endpoint used to delete an existing country record
+      operationId: v1-countries-delete
+      parameters:
+      - description: Country ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/swaggertypes.NoErrorString'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardBadRequestError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardUnauthorisedError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardInternalServerError'
+      summary: Delete country
+      tags:
+      - Countries
     get:
       description: Retrieve a country identified by id
       operationId: v1-countries-find
@@ -316,6 +351,11 @@ paths:
       description: Endpoint used to update an existing country record
       operationId: v1-countries-update
       parameters:
+      - description: Country ID
+        in: path
+        name: id
+        required: true
+        type: integer
       - description: Request Sample
         in: body
         name: request
