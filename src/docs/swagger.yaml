@@ -1,4 +1,131 @@
 basePath: /v1
+definitions:
+  countries.CountryInput:
+    properties:
+      active:
+        type: boolean
+      as_id:
+        type: integer
+      code:
+        type: string
+      flag:
+        type: string
+      name:
+        type: string
+    required:
+    - as_id
+    - name
+    type: object
+  countries.CountryOutput:
+    properties:
+      active:
+        type: boolean
+      as_id:
+        type: integer
+      code:
+        type: string
+      flag:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  countries.UpdateCountryInput:
+    properties:
+      active:
+        type: boolean
+      code:
+        type: string
+      flag:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  pagination.PaginatedResponse:
+    properties:
+      current_page:
+        type: integer
+      data: {}
+      from:
+        type: integer
+      last_page:
+        type: integer
+      per_page:
+        example: "0"
+        type: string
+      to:
+        type: integer
+      total:
+        type: integer
+    type: object
+  swaggertypes.NoErrorI:
+    properties:
+      code:
+        example: 200
+        type: integer
+    type: object
+  swaggertypes.NoErrorString:
+    properties:
+      code:
+        example: 200
+        type: integer
+      message:
+        type: string
+    type: object
+  swaggertypes.PaginatedData:
+    properties:
+      code:
+        type: integer
+      data:
+        properties:
+          current_page:
+            type: integer
+          data: {}
+          from:
+            type: integer
+          last_page:
+            type: integer
+          per_page:
+            example: "0"
+            type: string
+          to:
+            type: integer
+          total:
+            type: integer
+        type: object
+    type: object
+  swaggertypes.StandardBadRequestError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      error:
+        example: Bad Request
+        type: string
+    type: object
+  swaggertypes.StandardInternalServerError:
+    properties:
+      code:
+        example: 500
+        type: integer
+      error:
+        example: Server Error
+        type: string
+    type: object
+  swaggertypes.StandardUnauthorisedError:
+    properties:
+      code:
+        example: 401
+        type: integer
+      error:
+        example: INVALID_USER_AUTHENTICATION
+        type: string
+    type: object
 host: localhost:5000
 info:
   contact:
@@ -19,7 +146,9 @@ paths:
       operationId: health-check
       responses:
         "200":
-          description: ""
+          description: OK
+          schema:
+            type: string
         "400":
           description: Bad Request
           schema:
@@ -35,6 +164,186 @@ paths:
       summary: Health check endpoint.
       tags:
       - Health Check
+  /countries:
+    get:
+      description: Retrieve all countries
+      operationId: v1-countries-list
+      parameters:
+      - description: filter by code
+        in: query
+        name: code
+        type: string
+      - description: filter by name
+        in: query
+        name: name
+        type: string
+      - description: filter by status
+        enum:
+        - true
+        - false
+        in: query
+        name: active
+        type: boolean
+      - description: order direction
+        enum:
+        - asc
+        - desc
+        in: query
+        name: order
+        type: string
+      - description: order field
+        enum:
+        - id code name active
+        in: query
+        name: order_by
+        type: string
+      - description: page number
+        in: query
+        name: page
+        type: integer
+      - description: records per page
+        in: query
+        name: per_page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swaggertypes.PaginatedData'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/pagination.PaginatedResponse'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/countries.CountryOutput'
+                        type: array
+                    type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardBadRequestError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardUnauthorisedError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardInternalServerError'
+      summary: List countries
+      tags:
+      - Countries
+    post:
+      consumes:
+      - application/json
+      description: Endpoint used to create a new country record
+      operationId: v1-countries-create
+      parameters:
+      - description: Request Sample
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/countries.CountryInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/swaggertypes.NoErrorString'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardBadRequestError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardUnauthorisedError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardInternalServerError'
+      summary: Create country
+      tags:
+      - Countries
+  /countries/{id}:
+    get:
+      description: Retrieve a country identified by id
+      operationId: v1-countries-find
+      parameters:
+      - description: Country ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swaggertypes.NoErrorI'
+            - properties:
+                data:
+                  $ref: '#/definitions/countries.CountryOutput'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardBadRequestError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardUnauthorisedError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardInternalServerError'
+      summary: Find country
+      tags:
+      - Countries
+    put:
+      consumes:
+      - application/json
+      description: Endpoint used to update an existing country record
+      operationId: v1-countries-update
+      parameters:
+      - description: Request Sample
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/countries.UpdateCountryInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/swaggertypes.NoErrorString'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardBadRequestError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardUnauthorisedError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swaggertypes.StandardInternalServerError'
+      summary: Update country
+      tags:
+      - Countries
 securityDefinitions:
   ApiKeyAuth:
     in: header

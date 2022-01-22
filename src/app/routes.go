@@ -33,4 +33,12 @@ func (app *App) SetupRoutes() {
 	v1Routes := app.Router.Group("/v1")
 
 	v1Routes.GET("/", controllers.HealthController.Check)
+	countryGroup := v1Routes.Group("/countries")
+	{
+		countryGroup.POST("", controllers.CountryController.Create)
+		countryGroup.PUT("/:id", controllers.CountryController.Update)
+		countryGroup.GET("", controllers.CountryController.List)
+		countryGroup.GET("/:id", controllers.CountryController.Find)
+		countryGroup.DELETE("/:id", controllers.CountryController.Delete)
+	}
 }
