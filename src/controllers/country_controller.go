@@ -17,7 +17,7 @@ type countryControllerInterface interface {
 	Find(ctx *gin.Context)
 	List(ctx *gin.Context)
 	Delete(ctx *gin.Context)
-	SyncCountries(ctx *gin.Context)
+	Sync(ctx *gin.Context)
 }
 
 type countryController struct{}
@@ -111,8 +111,8 @@ func (c *countryController) Find(ctx *gin.Context) {
 		ctx.JSON(apiErr.Code(), apiErr)
 		return
 	}
-	result, apiErr := services.CountryService.Find(id, 0)
-	if err != nil {
+	result, apiErr := services.CountryService.Find(id)
+	if apiErr != nil {
 		ctx.JSON(apiErr.Code(), apiErr)
 		return
 	}
@@ -195,6 +195,13 @@ func (c *countryController) Delete(ctx *gin.Context) {
 	})
 }
 
-func (c *countryController) SyncCountries(ctx *gin.Context) {
-
+func (c *countryController) Sync(ctx *gin.Context) {
+	if err := services.CountryService.Sync(); err != nil {
+		ctx.JSON(err.Code(), err)
+		return
+	}
+	ctx.JSON(http.StatusOK, swaggertypes.NoErrorString{
+		Message: "SUCCESS",
+		Code:    http.StatusOK,
+	})
 }

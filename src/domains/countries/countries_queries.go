@@ -2,13 +2,11 @@ package countries
 
 const (
 	queryCreate = `INSERT INTO countries(
-		as_id,
 		code,
 		name,
 		flag,
 		active)
 	VALUES (
-		:as_id,
 		:code,
 		:name,
 		:flag,

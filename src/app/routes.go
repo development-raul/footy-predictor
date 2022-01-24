@@ -40,5 +40,6 @@ func (app *App) SetupRoutes() {
 		countryGroup.GET("", controllers.CountryController.List)
 		countryGroup.GET("/:id", controllers.CountryController.Find)
 		countryGroup.DELETE("/:id", controllers.CountryController.Delete)
+		countryGroup.POST("/sync", controllers.CountryController.Sync)
 	}
 }

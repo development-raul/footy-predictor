@@ -6,9 +6,10 @@ type Paging struct {
 }
 
 type Errors struct {
-	Time   string `json:"time"`
-	Bug    string `json:"bug"`
-	Report string `json:"report"`
+	Time     string `json:"time"`
+	Bug      string `json:"bug"`
+	Report   string `json:"report"`
+	Endpoint string `json:"endpoint"`
 }
 type CountriesResponse struct {
 	Name string `json:"name"`
@@ -20,9 +21,9 @@ type ErrorResponse struct {
 	StatusCode int64  `json:"status_code"`
 }
 type GetCountriesOutput struct {
-	Get        string              `json:"get"`
-	Errors     []Errors            `json:"errors"`
-	Results    int64               `json:"results"`
-	Paging     Paging              `json:"paging"`
-	Response   []CountriesResponse `json:"response"`
+	Get      string              `json:"get"`
+	Errors   []Errors            `json:"errors"`
+	Results  int64               `json:"results"`
+	Paging   Paging              `json:"paging"`
+	Response []CountriesResponse `json:"response"`
 }

@@ -2,7 +2,6 @@ package countries
 
 type Country struct {
 	ID     int64  `db:"id"`
-	AsID   int64  `db:"as_id"`
 	Code   string `db:"code"`
 	Name   string `db:"name"`
 	Flag   string `db:"flag"`
@@ -10,7 +9,6 @@ type Country struct {
 }
 
 type CountryInput struct {
-	AsID   int64  `json:"as_id" form:"as_id" validate:"required"`
 	Code   string `json:"code" form:"code"`
 	Name   string `json:"name" form:"name" validate:"required"`
 	Flag   string `json:"flag" form:"flag"`
@@ -37,7 +35,6 @@ type UpdateCountryInput struct {
 
 type CountryOutput struct {
 	ID     int64  `json:"id" db:"id"`
-	AsID   int64  `json:"as_id" db:"as_id"`
 	Code   string `json:"code" db:"code"`
 	Name   string `json:"name" db:"name"`
 	Flag   string `json:"flag" db:"flag"`

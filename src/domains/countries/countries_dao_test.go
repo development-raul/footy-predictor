@@ -20,7 +20,6 @@ func TestCountryDao_Create(t *testing.T) {
 			funcMock: func(m sqlmock.Sqlmock) {
 				m.ExpectExec("INSERT INTO countries").
 					WithArgs(
-						1,
 						"code",
 						"name",
 						"flag",
@@ -34,7 +33,6 @@ func TestCountryDao_Create(t *testing.T) {
 			funcMock: func(m sqlmock.Sqlmock) {
 				m.ExpectExec("INSERT INTO countries").
 					WithArgs(
-						1,
 						"code",
 						"name",
 						"flag",
@@ -48,7 +46,6 @@ func TestCountryDao_Create(t *testing.T) {
 			funcMock: func(m sqlmock.Sqlmock) {
 				m.ExpectExec("INSERT INTO countries").
 					WithArgs(
-						1,
 						"code",
 						"name",
 						"flag",
@@ -70,7 +67,6 @@ func TestCountryDao_Create(t *testing.T) {
 			testCase.funcMock(mock)
 
 			err = CountryDao.Create(&Country{
-				AsID:   1,
 				Code:   "code",
 				Name:   "name",
 				Flag:   "flag",
@@ -164,13 +160,11 @@ func TestCountryDao_FindByID(t *testing.T) {
 					WithArgs(1).
 					WillReturnRows(sqlmock.NewRows([]string{
 						"id",
-						"as_id",
 						"code",
 						"name",
 						"flag",
 						"active",
 					}).AddRow(
-						1,
 						1,
 						"code",
 						"name",
@@ -180,7 +174,6 @@ func TestCountryDao_FindByID(t *testing.T) {
 			},
 			expectedRes: &CountryOutput{
 				ID:     1,
-				AsID:   1,
 				Code:   "code",
 				Name:   "name",
 				Flag:   "flag",
@@ -201,73 +194,6 @@ func TestCountryDao_FindByID(t *testing.T) {
 			testCase.funcMock(mock)
 
 			res, err := CountryDao.FindByID(1)
-
-			assert.Equal(t, testCase.expectedRes, res)
-			assert.Equal(t, testCase.expectedErr, err)
-		})
-	}
-}
-
-func TestCountryDao_FindByAsID(t *testing.T) {
-	testCases := []struct {
-		title       string
-		funcMock    func(sqlmock.Sqlmock)
-		expectedRes *CountryOutput
-		expectedErr error
-	}{
-		{
-			title: "error Client.Get",
-			funcMock: func(m sqlmock.Sqlmock) {
-				m.ExpectQuery("SELECT (.+) FROM countries").
-					WithArgs(1).
-					WillReturnError(errors.New("test Get"))
-			},
-			expectedErr: errors.New("test Get"),
-		},
-		{
-			title: "success",
-			funcMock: func(m sqlmock.Sqlmock) {
-				m.ExpectQuery("SELECT (.+) FROM countries").
-					WithArgs(1).
-					WillReturnRows(sqlmock.NewRows([]string{
-						"id",
-						"as_id",
-						"code",
-						"name",
-						"flag",
-						"active",
-					}).AddRow(
-						1,
-						1,
-						"code",
-						"name",
-						"flag",
-						1,
-					))
-			},
-			expectedRes: &CountryOutput{
-				ID:     1,
-				AsID:   1,
-				Code:   "code",
-				Name:   "name",
-				Flag:   "flag",
-				Active: true,
-			},
-			expectedErr: nil,
-		},
-	}
-
-	for _, testCase := range testCases {
-		t.Run(testCase.title, func(t *testing.T) {
-			db, mock, err := sqlmock.New()
-			if err != nil {
-				t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
-			}
-			defer db.Close()
-			footy_db.Client = sqlx.NewDb(db, "sqlmock")
-			testCase.funcMock(mock)
-
-			res, err := CountryDao.FindByAsID(1)
 
 			assert.Equal(t, testCase.expectedRes, res)
 			assert.Equal(t, testCase.expectedErr, err)
@@ -299,13 +225,11 @@ func TestCountryDao_List(t *testing.T) {
 					WithArgs("code", "%name%").
 					WillReturnRows(sqlmock.NewRows([]string{
 						"id",
-						"as_id",
 						"code",
 						"name",
 						"flag",
 						"active",
 					}).AddRow(
-						1,
 						1,
 						"code",
 						"name",
@@ -325,13 +249,11 @@ func TestCountryDao_List(t *testing.T) {
 					WithArgs("code", "%name%").
 					WillReturnRows(sqlmock.NewRows([]string{
 						"id",
-						"as_id",
 						"code",
 						"name",
 						"flag",
 						"active",
 					}).AddRow(
-						1,
 						1,
 						"code",
 						"name",
@@ -348,7 +270,6 @@ func TestCountryDao_List(t *testing.T) {
 			expectedRes: []CountryOutput{
 				{
 					ID:     1,
-					AsID:   1,
 					Code:   "code",
 					Name:   "name",
 					Flag:   "flag",

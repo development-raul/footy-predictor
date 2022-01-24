@@ -13,7 +13,6 @@ type CountryDaoI interface {
 	Create(country *Country) error
 	Update(country *UpdateCountryInput) error
 	FindByID(id int64) (*CountryOutput, error)
-	FindByAsID(id int64) (*CountryOutput, error)
 	List(req *ListCountryInput) ([]CountryOutput, int64, error)
 	Delete(id int64) error
 }
@@ -56,26 +55,14 @@ func (d *countryDao) FindByID(id int64) (*CountryOutput, error) {
 	return &result, nil
 }
 
-func (d *countryDao) FindByAsID(id int64) (*CountryOutput, error) {
-	var result CountryOutput
-
-	err := footy_db.Client.Get(&result, queryFindByAsID, id)
-	if err != nil {
-		zlog.Logger.Error("CountryDao FindByAsID Get", err)
-		return nil, err
-	}
-	return &result, nil
-}
-
 func (d *countryDao) List(req *ListCountryInput) ([]CountryOutput, int64, error) {
 	var results []CountryOutput
-	fmt.Println("raul", req.Page, req.PerPage)
 	// Create where, limit and order by clauses
 	where, args := d.generateListWhereClause(req)
 	limit := pagination.GeneratePaginationQuery(req.Page, req.PerPage)
 	order := pagination.GeneratePaginationSort("name ASC", req.OrderBy, req.Order)
 	query := fmt.Sprintf(queryList, where, order, limit)
-	fmt.Println(query, args)
+
 	// Get the records
 	err := footy_db.Client.Select(&results, query, args...)
 	if err != nil {

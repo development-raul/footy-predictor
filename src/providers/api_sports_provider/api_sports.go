@@ -11,13 +11,13 @@ import (
 	"os"
 )
 
-func GetCountries()([]api_sports.CountriesResponse, *api_sports.ErrorResponse) {
+func GetCountries() ([]api_sports.CountriesResponse, *api_sports.ErrorResponse) {
 	// Make API Sports request
-	res, err := restclient.Get(fmt.Sprintf("%s/api_sports", os.Getenv("AS_BASE_URL")), setHeaders())
+	res, err := restclient.Get(fmt.Sprintf("%s/countries", os.Getenv("AS_BASE_URL")), setHeaders())
 	if err != nil {
 		zlog.Logger.Error("APISportsProvider GetCountries Get: ", err)
 		return nil, &api_sports.ErrorResponse{
-			Message: "Error making API request",
+			Message:    "Error making API request",
 			StatusCode: http.StatusInternalServerError,
 		}
 	}
@@ -48,7 +48,7 @@ func GetCountries()([]api_sports.CountriesResponse, *api_sports.ErrorResponse) {
 		errResponse.StatusCode = int64(res.StatusCode)
 		return nil, &errResponse
 	}
-	zlog.Logger.Info("API Sports 200 response: ",string(bytes))
+	zlog.Logger.Info("API Sports 200 response: ", string(bytes))
 	// Handle success response from API Sports
 	var result api_sports.GetCountriesOutput
 	if err := json.Unmarshal(bytes, &result); err != nil {
@@ -61,7 +61,7 @@ func GetCountries()([]api_sports.CountriesResponse, *api_sports.ErrorResponse) {
 	return result.Response, nil
 }
 
-func setHeaders()http.Header {
+func setHeaders() http.Header {
 	headers := http.Header{}
 	headers.Set("Content-type", "application/json")
 	headers.Set("Accept", "application/json")
