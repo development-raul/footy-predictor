@@ -21,8 +21,7 @@ const (
 	  WHERE
 		id = :id`
 
-	queryFindByID   = `SELECT * FROM countries WHERE id = ? LIMIT 1`
-	queryFindByAsID = `SELECT * FROM countries WHERE as_id = ? LIMIT 1`
+	queryFindByID = `SELECT * FROM countries WHERE id = ? LIMIT 1`
 
 	queryList      = `SELECT * FROM countries %s ORDER BY %s %s`
 	queryListTotal = `SELECT count(id) FROM countries %s`
