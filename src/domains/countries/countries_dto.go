@@ -26,11 +26,11 @@ type ListCountryInput struct {
 }
 
 type UpdateCountryInput struct {
-	ID     int64
-	Code   string `json:"code" form:"code"`
-	Name   string `json:"name" form:"name" validate:"required"`
-	Flag   string `json:"flag" form:"flag"`
-	Active bool   `json:"active" form:"active"`
+	ID     int64  `json:"-" form:"-" db:"id"`
+	Code   string `json:"code" form:"code" db:"code"`
+	Name   string `json:"name" form:"name" db:"name" validate:"required"`
+	Flag   string `json:"flag" form:"flag" db:"flag"`
+	Active bool   `json:"active" form:"active" db:"active"`
 }
 
 type CountryOutput struct {

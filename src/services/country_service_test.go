@@ -151,7 +151,6 @@ func TestCountryService_Find(t *testing.T) {
 	testCases := []struct {
 		title          string
 		id             int64
-		asID           int64
 		countryDaoMock countries.CountryDaoI
 		expectedRes    *countries.CountryOutput
 		expectedErr    resterror.RestErrorI
@@ -159,7 +158,6 @@ func TestCountryService_Find(t *testing.T) {
 		{
 			title: "error CountryDao.FindByID",
 			id:    1,
-			asID:  0,
 			countryDaoMock: &MockCountryDao{
 				FuncFindByID: func(id int64) (*countries.CountryOutput, error) {
 					return nil, errors.New("error FindByID")
@@ -171,7 +169,6 @@ func TestCountryService_Find(t *testing.T) {
 		{
 			title: "error CountryDao.FindByID",
 			id:    1,
-			asID:  0,
 			countryDaoMock: &MockCountryDao{
 				FuncFindByID: func(id int64) (*countries.CountryOutput, error) {
 					return nil, sql.ErrNoRows
@@ -183,7 +180,6 @@ func TestCountryService_Find(t *testing.T) {
 		{
 			title: "success",
 			id:    1,
-			asID:  0,
 			countryDaoMock: &MockCountryDao{
 				FuncFindByID: func(id int64) (*countries.CountryOutput, error) {
 					return &countries.CountryOutput{
