@@ -23,6 +23,7 @@ func (i *FakeReaderCloser) Close() error {
 }
 
 func TestAPISportsProvider_GetCountries(t *testing.T) {
+	os.Setenv("AS_BASE_URL", "https://test.com")
 	testCases := []struct {
 		title       string
 		apiMock     restclient.Mock
@@ -43,7 +44,7 @@ func TestAPISportsProvider_GetCountries(t *testing.T) {
 		{
 			title: "error ioutil.ReadAll",
 			apiMock: restclient.Mock{
-				Url:        "https://test.com/api_sports",
+				Url:        "https://test.com/countries",
 				HttpMethod: http.MethodGet,
 				Response: &http.Response{
 					StatusCode: 200,
@@ -61,7 +62,7 @@ func TestAPISportsProvider_GetCountries(t *testing.T) {
 		{
 			title: "error non 200 json.Unmarshal",
 			apiMock: restclient.Mock{
-				Url:        "https://test.com/api_sports",
+				Url:        "https://test.com/countries",
 				HttpMethod: http.MethodGet,
 				Response: &http.Response{
 					StatusCode: 499,
@@ -79,7 +80,7 @@ func TestAPISportsProvider_GetCountries(t *testing.T) {
 		{
 			title: "error non 200 response",
 			apiMock: restclient.Mock{
-				Url:        "https://test.com/api_sports",
+				Url:        "https://test.com/countries",
 				HttpMethod: http.MethodGet,
 				Response: &http.Response{
 					StatusCode: 499,
@@ -97,7 +98,7 @@ func TestAPISportsProvider_GetCountries(t *testing.T) {
 		{
 			title: "error 200 json.Unmarshal",
 			apiMock: restclient.Mock{
-				Url:        "https://test.com/api_sports",
+				Url:        "https://test.com/countries",
 				HttpMethod: http.MethodGet,
 				Response: &http.Response{
 					StatusCode: 200,
@@ -115,7 +116,7 @@ func TestAPISportsProvider_GetCountries(t *testing.T) {
 		{
 			title: "success",
 			apiMock: restclient.Mock{
-				Url:        "https://test.com/api_sports",
+				Url:        "https://test.com/countries",
 				HttpMethod: http.MethodGet,
 				Response: &http.Response{
 					StatusCode: 200,
@@ -144,6 +145,131 @@ func TestAPISportsProvider_GetCountries(t *testing.T) {
 			os.Setenv("AS_BASE_URL", testCase.baseURL)
 
 			res, err := GetCountries()
+			assert.Equal(t, testCase.expectedRes, res)
+			assert.Equal(t, testCase.expectedErr, err)
+
+			restclient.FlushMockups()
+		})
+	}
+}
+
+func TestAPISportsProvider_Seasons(t *testing.T) {
+	os.Setenv("AS_BASE_URL", "https://test.com")
+	testCases := []struct {
+		title       string
+		apiMock     restclient.Mock
+		withMock    bool
+		baseURL     string
+		expectedRes []int64
+		expectedErr *api_sports.ErrorResponse
+	}{
+		{
+			title:       "error restclient.Get",
+			baseURL:     "invalid-url",
+			expectedRes: nil,
+			expectedErr: &api_sports.ErrorResponse{
+				Message:    "Error making API request",
+				StatusCode: http.StatusInternalServerError,
+			},
+		},
+		{
+			title: "error ioutil.ReadAll",
+			apiMock: restclient.Mock{
+				Url:        "https://test.com/leagues/seasons",
+				HttpMethod: http.MethodGet,
+				Response: &http.Response{
+					StatusCode: 200,
+					Body:       &FakeReaderCloser{},
+				},
+			},
+			withMock:    true,
+			baseURL:     "https://test.com",
+			expectedRes: nil,
+			expectedErr: &api_sports.ErrorResponse{
+				Message:    "Error reading API response",
+				StatusCode: http.StatusInternalServerError,
+			},
+		},
+		{
+			title: "error non 200 json.Unmarshal",
+			apiMock: restclient.Mock{
+				Url:        "https://test.com/leagues/seasons",
+				HttpMethod: http.MethodGet,
+				Response: &http.Response{
+					StatusCode: 499,
+					Body:       io.NopCloser(strings.NewReader(`{"response does not match ErrorResponse struct"}`)),
+				},
+			},
+			withMock:    true,
+			baseURL:     "https://test.com",
+			expectedRes: nil,
+			expectedErr: &api_sports.ErrorResponse{
+				Message:    "Error decoding API response",
+				StatusCode: http.StatusInternalServerError,
+			},
+		},
+		{
+			title: "error non 200 response",
+			apiMock: restclient.Mock{
+				Url:        "https://test.com/leagues/seasons",
+				HttpMethod: http.MethodGet,
+				Response: &http.Response{
+					StatusCode: 499,
+					Body:       io.NopCloser(strings.NewReader(`{"message": "Something went wrong while fetching details. Try again later."}`)),
+				},
+			},
+			withMock:    true,
+			baseURL:     "https://test.com",
+			expectedRes: nil,
+			expectedErr: &api_sports.ErrorResponse{
+				Message:    "Something went wrong while fetching details. Try again later.",
+				StatusCode: 499,
+			},
+		},
+		{
+			title: "error 200 json.Unmarshal",
+			apiMock: restclient.Mock{
+				Url:        "https://test.com/leagues/seasons",
+				HttpMethod: http.MethodGet,
+				Response: &http.Response{
+					StatusCode: 200,
+					Body:       io.NopCloser(strings.NewReader(`{"response does not match ErrorResponse struct"}`)),
+				},
+			},
+			withMock:    true,
+			baseURL:     "https://test.com",
+			expectedRes: nil,
+			expectedErr: &api_sports.ErrorResponse{
+				Message:    "Error decoding API response",
+				StatusCode: http.StatusInternalServerError,
+			},
+		},
+		{
+			title: "success",
+			apiMock: restclient.Mock{
+				Url:        "https://test.com/leagues/seasons",
+				HttpMethod: http.MethodGet,
+				Response: &http.Response{
+					StatusCode: 200,
+					Body:       io.NopCloser(strings.NewReader(`{"parameters":[],"errors":[],"results":16,"paging":{"current":1,"total":1},"response":[2008,2009,2010]}`)),
+				},
+			},
+			withMock:    true,
+			baseURL:     "https://test.com",
+			expectedRes: []int64{2008, 2009, 2010},
+			expectedErr: nil,
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.title, func(t *testing.T) {
+			if testCase.withMock {
+				restclient.StartMockups()
+				restclient.AddMockup(testCase.apiMock)
+			}
+			os.Setenv("AS_BASE_URL", testCase.baseURL)
+
+			res, err := GetSeasons()
 			assert.Equal(t, testCase.expectedRes, res)
 			assert.Equal(t, testCase.expectedErr, err)
 

@@ -167,7 +167,7 @@ func TestCountryService_Find(t *testing.T) {
 			expectedErr: resterror.NewStandardInternalServerError(),
 		},
 		{
-			title: "error CountryDao.FindByID",
+			title: "error CountryDao.FindByID no rows",
 			id:    1,
 			countryDaoMock: &MockCountryDao{
 				FuncFindByID: func(id int64) (*countries.CountryOutput, error) {

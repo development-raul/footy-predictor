@@ -96,3 +96,12 @@ func GetNowString() string {
 func GetNowDBFormat() string {
 	return GetNow().Format(apiDBLayout)
 }
+
+func ContainsInt64(haystack []int64, needle int64) bool {
+	for _, v := range haystack {
+		if v == needle {
+			return true
+		}
+	}
+	return false
+}

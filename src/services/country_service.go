@@ -50,10 +50,7 @@ func (s *countryService) Update(req *countries.UpdateCountryInput, id int64) res
 }
 
 func (s *countryService) Find(id int64) (*countries.CountryOutput, resterror.RestErrorI) {
-	var res *countries.CountryOutput
-	var err error
-	res, err = countries.CountryDao.FindByID(id)
-
+	res, err := countries.CountryDao.FindByID(id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, resterror.NewStandardInternalServerError()
 	}

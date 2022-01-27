@@ -42,4 +42,12 @@ func (app *App) SetupRoutes() {
 		countryGroup.DELETE("/:id", controllers.CountryController.Delete)
 		countryGroup.POST("/sync", controllers.CountryController.Sync)
 	}
+	seasonGroup := v1Routes.Group("/seasons")
+	{
+		seasonGroup.POST("", controllers.SeasonController.Create)
+		seasonGroup.GET("", controllers.SeasonController.List)
+		seasonGroup.GET("/:id", controllers.SeasonController.Find)
+		seasonGroup.DELETE("/:id", controllers.SeasonController.Delete)
+		seasonGroup.POST("/sync", controllers.SeasonController.Sync)
+	}
 }
